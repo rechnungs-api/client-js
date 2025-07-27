@@ -15,7 +15,8 @@
 		}
 	},
 	"scripts": {
-		"generate": "openapi-ts -i http://www.localhost/api/v1/openapi.yaml -o src/generated -c @hey-api/client-fetch",
+		"generate:localhost": "openapi-ts -i http://www.localhost/api/v1/openapi.yaml -o src/generated -c @hey-api/client-fetch",
+		"generate:production": "openapi-ts -i http://www.rechnungs-api.de/api/v1/openapi.yaml -o src/generated -c @hey-api/client-fetch",
 		"build": "tsup",
 		"prepack": "yarn generate && yarn build"
 	},
