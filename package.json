@@ -1,0 +1,29 @@
+{
+	"name": "@rechnungs-api/client",
+	"version": "0.1.0",
+	"type": "module",
+	"files": [
+		"dist/**/*"
+	],
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"exports": {
+		".": {
+			"require": "./dist/index.cjs",
+			"import": "./dist/index.js"
+		}
+	},
+	"scripts": {
+		"generate": "openapi-ts -i http://www.localhost/api/v1/openapi.yaml -o src/generated -c @hey-api/client-fetch",
+		"build": "tsup",
+		"prepack": "yarn generate && yarn build"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.0.5",
+		"@hey-api/client-fetch": "^0.10.0",
+		"@hey-api/openapi-ts": "^0.66.7",
+		"tsup": "^8.4.0",
+		"typescript": "5.8.2"
+	}
+}

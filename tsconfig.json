@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"target": "ES2017",
+		"lib": ["ES2021", "DOM"],
+		"strict": true,
+		"allowJs": false,
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true,
+		"preserveSymlinks": true,
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"checkJs": false,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"declaration": true,
+		"declarationMap": true,
+		"noUncheckedIndexedAccess": true
+	}
+}
