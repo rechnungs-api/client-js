@@ -235,6 +235,26 @@ export class Client {
 	}
 
 	/**
+	 * Archives a transaction by creating a new transaction that reverses the effect of the archived transaction. Observably, this is similar to deleting a transaction, but it complies with the [GoBD](https://de.wikipedia.org/wiki/Grunds%C3%A4tze_zur_ordnungsm%C3%A4%C3%9Figen_F%C3%BChrung_und_Aufbewahrung_von_B%C3%BCchern,_Aufzeichnungen_und_Unterlagen_in_elektronischer_Form_sowie_zum_Datenzugriff).
+	 *
+	 * @returns The newly created transaction that cancels out the existing transaction.
+	 */
+	public async archiveLedgerTransaction(
+		ledgerId: string,
+		transactionNumber: number,
+	) {
+		const response = await fetch(
+			`${this.baseUrl}/ledgers/${ledgerId}/transactions/${transactionNumber}`,
+			{
+				method: "DELETE",
+				headers: this.headers,
+			},
+		);
+		if (!response.ok) throw await ApiError.fromResponse(response);
+		return (await response.json()) as LedgerTransaction;
+	}
+
+	/**
 	 * Lists balances of the accounts on a given ledger when taking into account transactions of a given timeframe.
 	 */
 	public async listLedgerBalances(

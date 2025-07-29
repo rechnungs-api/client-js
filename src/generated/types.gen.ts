@@ -502,6 +502,7 @@ export type LedgerTransactionCreateRequest = {
         creditAccountNumber: LedgerAccountNumber;
         value: Decimal;
     }>;
+    customData?: CustomData;
 };
 
 /**
@@ -512,10 +513,6 @@ export type Document = {
      * Unique identifier.
      */
     id: string;
-    /**
-     * Testing or production environment. This depends on which API key is used.
-     */
-    environment: 'testing' | 'production';
     idempotencyKey?: IdempotencyKey;
     /**
      * Type of a document, affecting localized strings, layouts, and possible parameters of the document.
@@ -641,10 +638,6 @@ export type Ledger = {
      */
     id: string;
     /**
-     * Testing or production environment. This depends on which API key is used.
-     */
-    environment: 'testing' | 'production';
-    /**
      * Date and time at which this entity was created ([ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)).
      */
     createdAt: string;
@@ -674,10 +667,6 @@ export type LedgerAccount = {
      */
     ledgerId: string;
     number: LedgerAccountNumber;
-    /**
-     * Testing or production environment. This depends on which API key is used.
-     */
-    environment: 'testing' | 'production';
     type: LedgerAccountType;
     /**
      * Date and time at which this entity was created ([ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)).
@@ -708,10 +697,6 @@ export type LedgerTransaction = {
      * Auto-incrementing unique integer identifier for a transaction on a ledger.
      */
     number: number;
-    /**
-     * Testing or production environment. This depends on which API key is used.
-     */
-    environment: 'testing' | 'production';
     idempotencyKey?: IdempotencyKey;
     /**
      * Date string with format `YYYY-MM-DD` ([ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)).
@@ -722,6 +707,7 @@ export type LedgerTransaction = {
      */
     description: string;
     positions: Array<LedgerTransactionPosition>;
+    customData?: CustomData;
     hash: string;
     /**
      * Date and time at which this entity was created ([ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)).
@@ -1028,6 +1014,37 @@ export type CreateLedgerTransactionResponses = {
 };
 
 export type CreateLedgerTransactionResponse = CreateLedgerTransactionResponses[keyof CreateLedgerTransactionResponses];
+
+export type ArchiveLedgerTransactionData = {
+    body?: never;
+    headers: {
+        /**
+         * Production or testing API key from the dashboard.
+         */
+        Authorization: string;
+    };
+    path: {
+        /**
+         * Unique identifier.
+         */
+        ledgerId: string;
+        /**
+         * Auto-incrementing unique integer identifier for a transaction on a ledger.
+         */
+        transactionNumber: number;
+    };
+    query?: never;
+    url: '/api/v1/ledgers/{ledgerId}/transactions/{transactionNumber}';
+};
+
+export type ArchiveLedgerTransactionResponses = {
+    /**
+     * Ledger transaction archived successfully.
+     */
+    200: LedgerTransaction;
+};
+
+export type ArchiveLedgerTransactionResponse = ArchiveLedgerTransactionResponses[keyof ArchiveLedgerTransactionResponses];
 
 export type ListLedgerBalancesData = {
     body?: never;
