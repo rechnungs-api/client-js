@@ -6,6 +6,7 @@ import type {
 	LedgerAccount,
 	LedgerAccountCreateRequest,
 	LedgerAccountListResponse,
+	LedgerCreateRequest,
 	LedgerListResponse,
 	LedgerTransaction,
 	LedgerTransactionCreateRequest,
@@ -133,11 +134,11 @@ export class Client {
 	/**
 	 * Creates a new ledger. This can be used to implement automated double-entry bookkeeping into your application.
 	 */
-	public async createLedger() {
+	public async createLedger(ledger?: LedgerCreateRequest) {
 		const response = await fetch(`${this.baseUrl}/ledgers`, {
 			method: "POST",
 			headers: this.headers,
-			body: JSON.stringify({}),
+			body: JSON.stringify(ledger ?? {}),
 		});
 		if (!response.ok) throw await ApiError.fromResponse(response);
 		return (await response.json()) as Ledger;

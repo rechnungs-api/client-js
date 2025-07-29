@@ -235,11 +235,11 @@ export type Address = {
     /**
      * Address line 2 (e.g., apartment, suite, unit, or building). May be empty.
      */
-    line2: string;
+    line2?: string;
     /**
      * Address line 3 (any additional information). May be empty.
      */
-    line3: string;
+    line3?: string;
     /**
      * ZIP or postal code.
      */
@@ -249,9 +249,9 @@ export type Address = {
      */
     city: string;
     /**
-     * State, county, province, or region.
+     * State, county, province, or region. May be empty.
      */
-    region: string;
+    region?: string;
     country: CountryCode;
 };
 
@@ -462,12 +462,13 @@ export type Cursor = string;
  * Creating a ledger can currently be done with an empty JSON object without any paramters.
  */
 export type LedgerCreateRequest = {
-    [key: string]: unknown;
+    customData?: CustomData;
 };
 
 export type LedgerAccountCreateRequest = {
     number: LedgerAccountNumber;
     type: LedgerAccountType;
+    customData?: CustomData;
 };
 
 /**
@@ -637,14 +638,11 @@ export type Ledger = {
      * Unique identifier.
      */
     id: string;
+    customData?: CustomData;
     /**
      * Date and time at which this entity was created ([ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)).
      */
     createdAt: string;
-    /**
-     * Date and time at which this entity was archived [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)).
-     */
-    archivedAt?: string;
 };
 
 /**
@@ -668,6 +666,7 @@ export type LedgerAccount = {
     ledgerId: string;
     number: LedgerAccountNumber;
     type: LedgerAccountType;
+    customData?: CustomData;
     /**
      * Date and time at which this entity was created ([ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)).
      */
