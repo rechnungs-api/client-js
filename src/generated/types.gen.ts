@@ -467,6 +467,7 @@ export type LedgerCreateRequest = {
 
 export type LedgerAccountCreateRequest = {
     number: LedgerAccountNumber;
+    name: LedgerAccountName;
     type: LedgerAccountType;
     customData?: CustomData;
 };
@@ -475,6 +476,11 @@ export type LedgerAccountCreateRequest = {
  * User-specified number uniquely identifying the account within the ledger.
  */
 export type LedgerAccountNumber = string;
+
+/**
+ * Human-readable account name.
+ */
+export type LedgerAccountName = string;
 
 /**
  * The type of a ledger account, indicating where on the balance sheet or profit and loss statement this account will be shown.
@@ -665,6 +671,7 @@ export type LedgerAccount = {
      */
     ledgerId: string;
     number: LedgerAccountNumber;
+    name: LedgerAccountName;
     type: LedgerAccountType;
     customData?: CustomData;
     /**
