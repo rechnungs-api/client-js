@@ -53,9 +53,10 @@ export type DocumentCreateRequest = {
     }>;
     customData?: CustomData;
     /**
-     * Theme configuration to customize the look of the generated document PDF.
+     * Theme configuration to customize the look of the generated document PDF. If a `customPdf` is specified, all other theme fields will be ignored, and the API will use the specified PDF instead of generating its own.
      */
     theme?: {
+        customPdf?: PdfData;
         logo?: ImageData;
         /**
          * Font family used for PDF text rendering. See https://fontsource.org/.
@@ -441,6 +442,12 @@ export type CurrencyCode = 'AED' | 'AFN' | 'ALL' | 'AMD' | 'ANG' | 'AOA' | 'ARS'
 export type CustomData = unknown;
 
 /**
+ * [Data URL](https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/data) used to specify a custom PDF to be used for the creation of a document. If this field is specified, the API will no longer generate its own PDF and instead embed the e-invoice data into this custom PDF. All other theme fields will be ignored. The maximum size is currently 10MiB. Supported MIME types are:
+ * * `application/pdf`
+ */
+export type PdfData = string;
+
+/**
  * [Data URL](https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/data) used to specify an image (e.g. a logo) in a JSON string encodable format. The maximum size is currently 10MiB. Supported MIME types are:
  * * `image/png`
  * * `image/jpeg`
@@ -473,7 +480,7 @@ export type LedgerAccountCreateRequest = {
 };
 
 /**
- * User-specified number uniquely identifying the account within the ledger.
+ * User-specified number uniquely identifying the account within the ledger. The DATEV account numbering schemes [SKR03](https://www.collmex.de/skr03.pdf) and [SKR04](https://www.collmex.de/skr04.pdf) are commonly used.
  */
 export type LedgerAccountNumber = string;
 
