@@ -57,9 +57,23 @@ const sender: SenderParty = {
 		city: "Hamburg",
 		country: "DE",
 	},
-	electronicAddress: { scheme: "EM", value: "info@example.com" },
+	electronicAddress: {
+		scheme: "EM",
+		value: "info@example.com",
+	},
+	contact: {
+		name: "Max Mustermann",
+		email: "max.mustermann@example.com",
+		phone: "+49123456789",
+		website: "https://www.rechnungs-api.de",
+	},
 	vatId: "DE1234569",
 	taxId: "12/345/67890",
+	owner: "Max Mustermann",
+	registration: {
+		office: "Amtsgericht Hamburg",
+		number: "HRB 12345678",
+	},
 };
 
 // 2. Define the Recipient (your client's details)
@@ -71,17 +85,33 @@ const recipient: RecipientParty = {
 		city: "Berlin",
 		country: "DE",
 	},
+	electronicAddress: {
+		scheme: "EM",
+		value: "info@rechnungs-api.de",
+	},
+	contact: {
+		name: "Erika Musterfrau",
+		email: "erika.musterfrau@example.com",
+		phone: "+49987654321",
+	},
 	vatId: "DE987654321",
 };
 
 // 3. Construct the invoice document
 const documentRequest: DocumentCreateRequest = {
 	type: "invoice",
+	locale: "de-DE",
 	number: "RE-1012",
 	issueDate: "2025-02-28",
 	dueDate: "2025-02-28",
 	sender,
 	recipient,
+
+	preTableText:
+		"Sehr geehrte Damen und Herren,\n\nDie folgende Leistung wird Ihnen in Rechnung gestellt:",
+	postTableText:
+		"Bitte überweisen Sie den Betrag binnen 30 Tagen auf das vereinbarte Bankkonto.",
+
 	// Add line items
 	lines: [
 		{

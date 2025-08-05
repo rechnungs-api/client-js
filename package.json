@@ -1,6 +1,6 @@
 {
 	"name": "@rechnungs-api/client",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"homepage": "https://www.rechnungs-api.de",
 	"repository": "github:rechnungs-api/client-js",
 	"keywords": ["e-rechnung", "rechnung", "e-invoice", "invoice", "zugferd", "xrechnung", "untdid", "bookkeeping", "accounting", "api", "client"],
