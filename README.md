@@ -106,6 +106,7 @@ const documentRequest: DocumentCreateRequest = {
 	dueDate: "2025-02-28",
 	sender,
 	recipient,
+	buyerReference: "00",
 
 	preTableText:
 		"Sehr geehrte Damen und Herren,\n\nDie folgende Leistung wird Ihnen in Rechnung gestellt:",
