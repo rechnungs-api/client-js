@@ -42,15 +42,7 @@ export type DocumentCreateRequest = {
      * Text that will be displayed after the price breakdown.
      */
     postTableText?: string;
-    lines: Array<{
-        item: LineItem;
-        quantity: Quantity;
-        unitPrice: Amount;
-        /**
-         * Textual note that gives unstructured information that is relevant to the document line.
-         */
-        note?: string;
-    }>;
+    lines: Array<DocumentLineCreateRequest>;
     customData?: CustomData;
     /**
      * Theme configuration to customize the look of the generated document PDF. If a `customPdf` is specified, all other theme fields will be ignored, and the API will use the specified PDF instead of generating its own.
@@ -356,6 +348,19 @@ export type Iban = string;
  * Bank Identification Code (BIC).
  */
 export type Bic = string;
+
+/**
+ * Single document line in a document creation request.
+ */
+export type DocumentLineCreateRequest = {
+    item: LineItem;
+    quantity: Quantity;
+    unitPrice: Amount;
+    /**
+     * Textual note that gives unstructured information that is relevant to the document line.
+     */
+    note?: string;
+};
 
 /**
  * Information about the goods and services.
