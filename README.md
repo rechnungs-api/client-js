@@ -149,6 +149,11 @@ const documentRequest: DocumentCreateRequest = {
 	eInvoice: {
 		type: "zugferd",
 		profile: "xrechnung",
+		validation: {
+			// Perform additional validation checks using Mustang.
+			// This increases the response time significantly.
+			mustang: true,
+		}
 	},
 	// Customize the look of your invoice
 	theme: {

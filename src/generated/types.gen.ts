@@ -58,9 +58,9 @@ export type DocumentCreateRequest = {
 };
 
 /**
- * A unique, user-specified string used to prevent the duplicate creation of an entity. For example, if your invoices all have a unique invoice number, you can use the invoice number as an idempotency key. If you now perform another API request to create the same invoice, the request is ignored.
+ * A unique, user-specified string used to prevent the duplicate creation of an entity. For example, if your invoices all have a unique invoice number, you can use the invoice number (e.g. `RE-1082`) as an idempotency key. If you now perform another API request to create the same invoice, the request is ignored.
  */
-export type IdempotencyKey = string;
+export type IdempotencyKey = string | null;
 
 /**
  * Type, profile and syntax to use for generating an e-invoice. May be set to `undefined` to indicate a raw PDF without structured e-invoice data (e.g. for B2C). For B2B use cases, we recommend ZUGFeRD.
@@ -339,6 +339,10 @@ export type DocumentLineCreateRequest = {
      * Textual note that gives unstructured information that is relevant to the document line.
      */
     note?: string;
+    /**
+     * Template-specific options for this line item. Structure depends on the template being used.
+     */
+    templateOptions?: TemplateLineOptions;
 };
 
 /**
@@ -365,13 +369,16 @@ export type LineItem = {
      * Code identifying the country from which the item originates.
      */
     originCountry?: CountryCode;
-    /**
-     * Information about the VAT rate charged for this item.
-     */
-    vat: {
-        code: VatCode;
-        rate?: VatRate;
-    };
+    vat: ItemVat;
+};
+
+/**
+ * Information about the VAT rate charged for this item.
+ */
+export type ItemVat = {
+    code: VatCode;
+    rate?: VatRate;
+    reason?: TaxExemptionReason;
 };
 
 /**
@@ -388,6 +395,22 @@ export type VatRate = Decimal;
  * Decimal number.
  */
 export type Decimal = string;
+
+/**
+ * Reason why the amount is exempted from VAT or why no VAT is being charged.
+ *
+ * This is necessary, for example, when using the German "§ 19 UStG. Kleinunternehmerregelung" with a `VatCode` of `E`.
+ */
+export type TaxExemptionReason = {
+    /**
+     * A coded statement of the reason for why the amount is exempted from VAT.
+     */
+    code?: string;
+    /**
+     * A textual statement of the reason why the amount is exempted from VAT or why no VAT is being charged.
+     */
+    text?: string;
+};
 
 /**
  * Quantity of goods or services, specified with a value and a unit.
@@ -419,6 +442,13 @@ export type AmountValue = string;
  * Three-letter currency code ([ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)).
  */
 export type CurrencyCode = 'AED' | 'AFN' | 'ALL' | 'AMD' | 'ANG' | 'AOA' | 'ARS' | 'AUD' | 'AWG' | 'AZN' | 'BAM' | 'BBD' | 'BDT' | 'BGN' | 'BHD' | 'BIF' | 'BMD' | 'BND' | 'BOB' | 'BOV' | 'BRL' | 'BSD' | 'BTN' | 'BWP' | 'BYN' | 'BZD' | 'CAD' | 'CDF' | 'CHE' | 'CHF' | 'CHW' | 'CLF' | 'CLP' | 'CNY' | 'COP' | 'COU' | 'CRC' | 'CUC' | 'CUP' | 'CVE' | 'CZK' | 'DJF' | 'DKK' | 'DOP' | 'DZD' | 'EGP' | 'ERN' | 'ETB' | 'EUR' | 'FJD' | 'FKP' | 'GBP' | 'GEL' | 'GHS' | 'GIP' | 'GMD' | 'GNF' | 'GTQ' | 'GYD' | 'HKD' | 'HNL' | 'HTG' | 'HUF' | 'IDR' | 'ILS' | 'INR' | 'IQD' | 'IRR' | 'ISK' | 'JMD' | 'JOD' | 'JPY' | 'KES' | 'KGS' | 'KHR' | 'KMF' | 'KPW' | 'KRW' | 'KWD' | 'KYD' | 'KZT' | 'LAK' | 'LBP' | 'LKR' | 'LRD' | 'LSL' | 'LYD' | 'MAD' | 'MDL' | 'MGA' | 'MKD' | 'MMK' | 'MNT' | 'MOP' | 'MRU' | 'MUR' | 'MVR' | 'MWK' | 'MXN' | 'MXV' | 'MYR' | 'MZN' | 'NAD' | 'NGN' | 'NIO' | 'NOK' | 'NPR' | 'NZD' | 'OMR' | 'PAB' | 'PEN' | 'PGK' | 'PHP' | 'PKR' | 'PLN' | 'PYG' | 'QAR' | 'RON' | 'RSD' | 'RUB' | 'RWF' | 'SAR' | 'SBD' | 'SCR' | 'SDG' | 'SEK' | 'SGD' | 'SHP' | 'SOS' | 'SRD' | 'SSP' | 'STN' | 'SVC' | 'SYP' | 'SZL' | 'THB' | 'TJS' | 'TMT' | 'TND' | 'TOP' | 'TRY' | 'TTD' | 'TWD' | 'TZS' | 'UAH' | 'UGX' | 'USD' | 'USN' | 'UYI' | 'UYU' | 'UYW' | 'UZS' | 'VES' | 'VND' | 'VUV' | 'WST' | 'XAF' | 'XAG' | 'XAU' | 'XBA' | 'XBB' | 'XBC' | 'XBD' | 'XCD' | 'XDR' | 'XOF' | 'XPD' | 'XPF' | 'XPT' | 'XSU' | 'XTS' | 'XUA' | 'YER' | 'ZAR' | 'ZMW' | 'ZWL';
+
+/**
+ * Template-specific options for this line item. Contact support to find out your template's options.
+ */
+export type TemplateLineOptions = {
+    [key: string]: unknown;
+};
 
 /**
  * Custom JSON value that you may use for storing additional metadata in any shape.
@@ -674,30 +704,7 @@ export type Document = {
      */
     postTableText?: string;
     lines: Array<DocumentLine>;
-    /**
-     * Information about the VAT on the document level.
-     */
-    vat: {
-        /**
-         * All VAT amounts of a given document grouped by their VAT code and rate.
-         */
-        groups: Array<{
-            code: VatCode;
-            rate?: VatRate;
-            /**
-             * Sum of all net amounts that are to be taxed by this specific VAT code and rate.
-             */
-            taxableAmount: Amount;
-            /**
-             * VAT amount that is to be paid for this specific VAT code and rate.
-             */
-            taxAmount: Amount;
-        }>;
-        /**
-         * Total VAT amount to be paid for the whole document.
-         */
-        totalAmount: Amount;
-    };
+    vat: DocumentVat;
     netAmount: Amount;
     grossAmount: Amount;
     hash: Hash;
@@ -728,6 +735,37 @@ export type DocumentLine = {
      * Textual note that gives unstructured information that is relevant to the document line.
      */
     note?: string;
+};
+
+/**
+ * Information about the VAT on the document level.
+ */
+export type DocumentVat = {
+    /**
+     * All VAT amounts of a given document grouped by their VAT code and rate.
+     */
+    groups: Array<VatGroup>;
+    /**
+     * Total VAT amount to be paid for the whole document.
+     */
+    totalAmount: Amount;
+};
+
+/**
+ * VAT amounts grouped by a specific VAT code and rate.
+ */
+export type VatGroup = {
+    code: VatCode;
+    rate?: VatRate;
+    reason?: TaxExemptionReason;
+    /**
+     * Sum of all net amounts that are to be taxed by this specific VAT code and rate.
+     */
+    taxableAmount: Amount;
+    /**
+     * VAT amount that is to be paid for this specific VAT code and rate.
+     */
+    taxAmount: Amount;
 };
 
 /**
