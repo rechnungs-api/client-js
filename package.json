@@ -3,9 +3,23 @@
 	"version": "0.2.1",
 	"homepage": "https://www.rechnungs-api.de",
 	"repository": "github:rechnungs-api/client-js",
-	"keywords": ["e-rechnung", "rechnung", "e-invoice", "invoice", "zugferd", "xrechnung", "en16931", "untdid", "bookkeeping", "accounting", "api", "client"],
+	"keywords": [
+		"e-rechnung",
+		"rechnung",
+		"e-invoice",
+		"invoice",
+		"zugferd",
+		"xrechnung",
+		"en16931",
+		"untdid",
+		"bookkeeping",
+		"accounting",
+		"api",
+		"client"
+	],
 	"license": "MIT",
 	"type": "module",
+	"packageManager": "pnpm@11.2.2",
 	"files": [
 		"dist/**/*"
 	],
@@ -22,7 +36,7 @@
 		"generate:localhost": "openapi-ts -i http://www.localhost/api/v1/openapi.yaml -o src/generated -c @hey-api/client-fetch",
 		"generate:production": "openapi-ts -i http://www.rechnungs-api.de/api/v1/openapi.yaml -o src/generated -c @hey-api/client-fetch",
 		"build": "tsup",
-		"prepack": "yarn generate:localhost && yarn build"
+		"prepack": "pnpm generate:localhost && pnpm build"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.0.5",

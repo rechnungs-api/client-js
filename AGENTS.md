@@ -19,17 +19,17 @@ Keep this package aligned with the public API contracts from the main `rechnungs
 
 ## Commands
 
-Use Yarn in this package; it contains Yarn Plug'n'Play files and a `yarn.lock`.
+Use pnpm in this package; it contains a `pnpm-lock.yaml`.
 
 ```bash
-yarn build
-yarn generate:localhost
-yarn generate:production
-yarn biome check .
-yarn biome format --write .
+pnpm build
+pnpm generate:localhost
+pnpm generate:production
+pnpm biome check .
+pnpm biome format --write .
 ```
 
-`yarn generate:localhost` expects the local RechnungsAPI app/API to serve `http://www.localhost/api/v1/openapi.yaml`. `yarn generate:production` uses the production OpenAPI document.
+`pnpm generate:localhost` expects the local RechnungsAPI app/API to serve `http://www.localhost/api/v1/openapi.yaml`. `pnpm generate:production` uses the production OpenAPI document.
 
 ## Code Style
 
@@ -57,9 +57,9 @@ yarn biome format --write .
 
 ## Testing And Verification
 
-- Run `yarn build` after TypeScript or export changes.
-- Run `yarn biome check .` after formatting-sensitive edits.
-- For generated code updates, run the relevant generation command and then `yarn build`.
+- Run `pnpm build` after TypeScript or export changes.
+- Run `pnpm biome check .` after formatting-sensitive edits.
+- For generated code updates, run the relevant generation command and then `pnpm build`.
 - For README examples, keep snippets realistic and consistent with exported types.
 
 ## Things To Avoid
