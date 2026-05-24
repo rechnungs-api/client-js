@@ -17,7 +17,7 @@ export type DocumentCreateRequest = {
     /**
      * Type of a document, affecting localized strings, layouts, and possible parameters of the document.
      */
-    type: 'invoice' | 'credit-note' | 'purchase-order' | 'sales-order' | 'quotation' | 'delivery-note';
+    type: 'invoice' | 'self-billing-invoice' | 'cancellation-invoice' | 'purchase-order' | 'sales-order' | 'quotation' | 'delivery-note';
     idempotencyKey?: IdempotencyKey;
     eInvoice?: EInvoiceConfiguration;
     locale: UnicodeLanguageIdentifier;
@@ -37,6 +37,7 @@ export type DocumentCreateRequest = {
     sender: SenderParty;
     recipient: RecipientParty;
     buyerReference?: BuyerReference;
+    precedingDocument?: PrecedingDocument;
     payment: PaymentInformation;
     /**
      * Information about the delivery destination of physical goods.
@@ -151,54 +152,6 @@ export type DeliveryPeriod = {
  */
 export type SenderParty = Party;
 
-/**
- * Information about one of the parties involved in this document.
- */
-export type Party = {
-    /**
-     * Party's legal name.
-     */
-    name: string;
-    address: Address;
-    /**
-     * Electronic Address Scheme (EAS) and value. A simple scheme is `EM`, which can be used to specify an email address. Required only for e-invoices.
-     */
-    electronicAddress?: {
-        /**
-         * [Electronic Address Scheme (EAS)](https://www.rechnungs-api.de/docs/codes/eas) code (subset).
-         */
-        scheme: '9901' | '9910' | '9913' | '9914' | '9915' | '9918' | '9919' | '9920' | '9922' | '9923' | '9924' | '9925' | '9926' | '9927' | '9928' | '9929' | '9930' | '9931' | '9932' | '9933' | '9934' | '9935' | '9936' | '9937' | '9938' | '9939' | '9940' | '9941' | '9942' | '9943' | '9944' | '9945' | '9946' | '9947' | '9948' | '9949' | '9950' | '9951' | '9952' | '9953' | '9957' | '9959' | '0002' | '0007' | '0009' | '0037' | '0060' | '0088' | '0096' | '0097' | '0106' | '0130' | '0135' | '0142' | '0151' | '0177' | '0183' | '0184' | '0188' | '0190' | '0191' | '0192' | '0193' | '0195' | '0196' | '0198' | '0199' | '0200' | '0201' | '0202' | '0204' | '0208' | '0209' | '0210' | '0211' | '0212' | '0213' | '0215' | '0216' | '0218' | '0221' | '0230' | '0235' | 'EM' | 'AQ' | 'AS' | 'AU';
-        /**
-         * Electronic address, matching the specified scheme
-         */
-        value: string;
-    };
-    contact: ContactMethods;
-    vatId?: VatId;
-    taxId?: TaxId;
-    /**
-     * Registration office and number for a company.
-     */
-    registration?: {
-        /**
-         * Registration office for a company.
-         */
-        office: string;
-        /**
-         * Registration number for a company.
-         */
-        number: string;
-    };
-    /**
-     * Name of the chief executive officer in charge of this party.
-     */
-    ceo?: string;
-    /**
-     * Name of the owner of this party.
-     */
-    owner?: string;
-};
-
 export type Address = {
     /**
      * Address line 1 (e.g., street, PO Box, or company name).
@@ -271,6 +224,54 @@ export type VatId = string;
 export type TaxId = string;
 
 /**
+ * Information about one of the parties involved in this document.
+ */
+export type Party = {
+    /**
+     * Party's legal name.
+     */
+    name: string;
+    address: Address;
+    /**
+     * Electronic Address Scheme (EAS) and value. A simple scheme is `EM`, which can be used to specify an email address. Required only for e-invoices.
+     */
+    electronicAddress?: {
+        /**
+         * [Electronic Address Scheme (EAS)](https://www.rechnungs-api.de/docs/codes/eas) code (subset).
+         */
+        scheme: '9910' | '9913' | '9914' | '9915' | '9918' | '9919' | '9920' | '9922' | '9923' | '9924' | '9925' | '9926' | '9927' | '9928' | '9929' | '9930' | '9931' | '9932' | '9933' | '9934' | '9935' | '9936' | '9937' | '9938' | '9939' | '9940' | '9941' | '9942' | '9943' | '9944' | '9945' | '9946' | '9947' | '9948' | '9949' | '9950' | '9951' | '9952' | '9953' | '9957' | '9959' | '0002' | '0007' | '0009' | '0037' | '0060' | '0088' | '0096' | '0097' | '0106' | '0130' | '0135' | '0142' | '0151' | '0177' | '0183' | '0184' | '0188' | '0190' | '0191' | '0192' | '0193' | '0195' | '0196' | '0198' | '0199' | '0200' | '0201' | '0202' | '0204' | '0208' | '0209' | '0210' | '0211' | '0212' | '0213' | '0215' | '0216' | '0218' | '0221' | '0230' | '0235' | 'EM' | 'AQ' | 'AS' | 'AU';
+        /**
+         * Electronic address, matching the specified scheme
+         */
+        value: string;
+    };
+    contact: ContactMethods;
+    vatId?: VatId;
+    taxId?: TaxId;
+    /**
+     * Registration office and number for a company.
+     */
+    registration?: {
+        /**
+         * Registration office for a company.
+         */
+        office: string;
+        /**
+         * Registration number for a company.
+         */
+        number: string;
+    };
+    /**
+     * Name of the chief executive officer in charge of this party.
+     */
+    ceo?: string;
+    /**
+     * Name of the owner of this party.
+     */
+    owner?: string;
+};
+
+/**
  * Recipient of this document. For most documents, this is the customer (buyer). For purchase orders, it is the supplier (seller).
  */
 export type RecipientParty = Party;
@@ -279,6 +280,24 @@ export type RecipientParty = Party;
  * Identifier provided by the buyer for internal routing purposes. Mandatory for e-invoices. This should be the "Leitweg-ID" if available. For B2B applications, accounting software sevDesk suggests using `00` instead, as the Leitweg-ID is not mandatory.
  */
 export type BuyerReference = string;
+
+/**
+ * Reference to a preceding document that is being corrected or cancelled. Required for cancellation invoices (Stornorechnung).
+ */
+export type PrecedingDocument = {
+    /**
+     * The number/ID of the preceding document being corrected or cancelled.
+     */
+    number: string;
+    /**
+     * The issue date of the preceding document.
+     */
+    issueDate?: string;
+    /**
+     * The reason for the correction or cancellation.
+     */
+    reason?: string;
+};
 
 /**
  * Information about the payment for goods and services mentioned in this document.
@@ -399,11 +418,16 @@ export type Decimal = string;
 /**
  * Reason why the amount is exempted from VAT or why no VAT is being charged.
  *
- * This is necessary, for example, when using the German "§ 19 UStG. Kleinunternehmerregelung" with a `VatCode` of `E`.
+ * Examples:
+ *
+ * **§ 19 UStG Kleinunternehmerregelung**: The German Kleinunternehmerregelung is represented with the [UNTDID-5305 VAT category code](/docs/codes/untdid-5305) `E`, in combination with an exemption reason text like "Umsatzsteuerbefreit aufgrund der Kleinunternehmerregelung gemäß § 19 UStG.".
+ *
+ * **§ 13b Reverse Charge**: Reverse Charge is represented with the [UNTDID-5305 VAT category code](/docs/codes/untdid-5305) `AE`. Here, the [VATEX code](/docs/codes/vatex) `VATEX-EU-AE` can be used as the exemption reason.
+ *
  */
 export type TaxExemptionReason = {
     /**
-     * A coded statement of the reason for why the amount is exempted from VAT.
+     * A coded statement of the reason for why the amount is exempted from VAT. See the [VATEX code list](/docs/codes/vatex).
      */
     code?: string;
     /**
@@ -441,7 +465,7 @@ export type AmountValue = string;
 /**
  * Three-letter currency code ([ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)).
  */
-export type CurrencyCode = 'AED' | 'AFN' | 'ALL' | 'AMD' | 'ANG' | 'AOA' | 'ARS' | 'AUD' | 'AWG' | 'AZN' | 'BAM' | 'BBD' | 'BDT' | 'BGN' | 'BHD' | 'BIF' | 'BMD' | 'BND' | 'BOB' | 'BOV' | 'BRL' | 'BSD' | 'BTN' | 'BWP' | 'BYN' | 'BZD' | 'CAD' | 'CDF' | 'CHE' | 'CHF' | 'CHW' | 'CLF' | 'CLP' | 'CNY' | 'COP' | 'COU' | 'CRC' | 'CUC' | 'CUP' | 'CVE' | 'CZK' | 'DJF' | 'DKK' | 'DOP' | 'DZD' | 'EGP' | 'ERN' | 'ETB' | 'EUR' | 'FJD' | 'FKP' | 'GBP' | 'GEL' | 'GHS' | 'GIP' | 'GMD' | 'GNF' | 'GTQ' | 'GYD' | 'HKD' | 'HNL' | 'HTG' | 'HUF' | 'IDR' | 'ILS' | 'INR' | 'IQD' | 'IRR' | 'ISK' | 'JMD' | 'JOD' | 'JPY' | 'KES' | 'KGS' | 'KHR' | 'KMF' | 'KPW' | 'KRW' | 'KWD' | 'KYD' | 'KZT' | 'LAK' | 'LBP' | 'LKR' | 'LRD' | 'LSL' | 'LYD' | 'MAD' | 'MDL' | 'MGA' | 'MKD' | 'MMK' | 'MNT' | 'MOP' | 'MRU' | 'MUR' | 'MVR' | 'MWK' | 'MXN' | 'MXV' | 'MYR' | 'MZN' | 'NAD' | 'NGN' | 'NIO' | 'NOK' | 'NPR' | 'NZD' | 'OMR' | 'PAB' | 'PEN' | 'PGK' | 'PHP' | 'PKR' | 'PLN' | 'PYG' | 'QAR' | 'RON' | 'RSD' | 'RUB' | 'RWF' | 'SAR' | 'SBD' | 'SCR' | 'SDG' | 'SEK' | 'SGD' | 'SHP' | 'SOS' | 'SRD' | 'SSP' | 'STN' | 'SVC' | 'SYP' | 'SZL' | 'THB' | 'TJS' | 'TMT' | 'TND' | 'TOP' | 'TRY' | 'TTD' | 'TWD' | 'TZS' | 'UAH' | 'UGX' | 'USD' | 'USN' | 'UYI' | 'UYU' | 'UYW' | 'UZS' | 'VES' | 'VND' | 'VUV' | 'WST' | 'XAF' | 'XAG' | 'XAU' | 'XBA' | 'XBB' | 'XBC' | 'XBD' | 'XCD' | 'XDR' | 'XOF' | 'XPD' | 'XPF' | 'XPT' | 'XSU' | 'XTS' | 'XUA' | 'YER' | 'ZAR' | 'ZMW' | 'ZWL';
+export type CurrencyCode = 'AED' | 'AFN' | 'ALL' | 'AMD' | 'ANG' | 'AOA' | 'ARS' | 'AUD' | 'AWG' | 'AZN' | 'BAM' | 'BBD' | 'BDT' | 'BGN' | 'BHD' | 'BIF' | 'BMD' | 'BND' | 'BOB' | 'BOV' | 'BRL' | 'BSD' | 'BTN' | 'BWP' | 'BYN' | 'BZD' | 'CAD' | 'CDF' | 'CHE' | 'CHF' | 'CHW' | 'CLF' | 'CLP' | 'CNY' | 'COP' | 'COU' | 'CRC' | 'CUP' | 'CVE' | 'CZK' | 'DJF' | 'DKK' | 'DOP' | 'DZD' | 'EGP' | 'ERN' | 'ETB' | 'EUR' | 'FJD' | 'FKP' | 'GBP' | 'GEL' | 'GHS' | 'GIP' | 'GMD' | 'GNF' | 'GTQ' | 'GYD' | 'HKD' | 'HNL' | 'HTG' | 'HUF' | 'IDR' | 'ILS' | 'INR' | 'IQD' | 'IRR' | 'ISK' | 'JMD' | 'JOD' | 'JPY' | 'KES' | 'KGS' | 'KHR' | 'KMF' | 'KPW' | 'KRW' | 'KWD' | 'KYD' | 'KZT' | 'LAK' | 'LBP' | 'LKR' | 'LRD' | 'LSL' | 'LYD' | 'MAD' | 'MDL' | 'MGA' | 'MKD' | 'MMK' | 'MNT' | 'MOP' | 'MRU' | 'MUR' | 'MVR' | 'MWK' | 'MXN' | 'MXV' | 'MYR' | 'MZN' | 'NAD' | 'NGN' | 'NIO' | 'NOK' | 'NPR' | 'NZD' | 'OMR' | 'PAB' | 'PEN' | 'PGK' | 'PHP' | 'PKR' | 'PLN' | 'PYG' | 'QAR' | 'RON' | 'RSD' | 'RUB' | 'RWF' | 'SAR' | 'SBD' | 'SCR' | 'SDG' | 'SEK' | 'SGD' | 'SHP' | 'SOS' | 'SRD' | 'SSP' | 'STN' | 'SVC' | 'SYP' | 'SZL' | 'THB' | 'TJS' | 'TMT' | 'TND' | 'TOP' | 'TRY' | 'TTD' | 'TWD' | 'TZS' | 'UAH' | 'UGX' | 'USD' | 'USN' | 'UYI' | 'UYU' | 'UYW' | 'UZS' | 'VES' | 'VND' | 'VUV' | 'WST' | 'XAF' | 'XAG' | 'XAU' | 'XBA' | 'XBB' | 'XBC' | 'XBD' | 'XCD' | 'XDR' | 'XOF' | 'XPD' | 'XPF' | 'XPT' | 'XSU' | 'XTS' | 'XUA' | 'YER' | 'ZAR' | 'ZMW';
 
 /**
  * Template-specific options for this line item. Contact support to find out your template's options.
@@ -469,37 +493,23 @@ export type Theme = {
      * Configuration for the document's page theme.
      */
     page?: {
-        margin?: number | {
-            /**
-             * Insets on the X-Axis, i.e. left and right, in centimeters.
-             */
-            x: number;
-            /**
-             * Insets on the Y-Axis, i.e. top and bottom, in centimeters.
-             */
-            y: number;
-        } | {
-            /**
-             * Insets on the top side in centimeters.
-             */
-            top: number;
-            /**
-             * Insets on the bottom side in centimeters.
-             */
-            bottom: number;
-            /**
-             * Insets on the left side in centimeters.
-             */
-            left: number;
-            /**
-             * Insets on the right side in centimeters.
-             */
-            right: number;
-        };
+        /**
+         * Padding or margin specified in centimeters.
+         */
+        margin?: EdgeInsets;
         background?: ImageData;
     };
     header?: {
         variant: 'solstice';
+        /**
+         * Configuration for the logo in the page header.
+         */
+        logo?: {
+            /**
+             * Logo height in centimeters. Defaults to 1cm and is constrained so the letter-folding layout remains stable.
+             */
+            height: number;
+        };
     } | {
         variant: 'blank';
     };
@@ -524,6 +534,37 @@ export type PdfData = string;
  * * `image/svg+xml`
  */
 export type ImageData = string;
+
+/**
+ * Padding or margin specified in centimeters.
+ */
+export type EdgeInsets = number | {
+    /**
+     * Insets on the X-Axis, i.e. left and right, in centimeters.
+     */
+    x: number;
+    /**
+     * Insets on the Y-Axis, i.e. top and bottom, in centimeters.
+     */
+    y: number;
+} | {
+    /**
+     * Insets on the top side in centimeters.
+     */
+    top: number;
+    /**
+     * Insets on the bottom side in centimeters.
+     */
+    bottom: number;
+    /**
+     * Insets on the left side in centimeters.
+     */
+    left: number;
+    /**
+     * Insets on the right side in centimeters.
+     */
+    right: number;
+};
 
 /**
  * Custom template for more advanced modifications to the look and feel of the document. Contact our support team to fully customize the documents to your use case.
@@ -627,7 +668,7 @@ export type DocumentListItem = {
     /**
      * Type of a document, affecting localized strings, layouts, and possible parameters of the document.
      */
-    type: 'invoice' | 'credit-note' | 'purchase-order' | 'sales-order' | 'quotation' | 'delivery-note';
+    type: 'invoice' | 'self-billing-invoice' | 'cancellation-invoice' | 'purchase-order' | 'sales-order' | 'quotation' | 'delivery-note';
     eInvoice?: EInvoiceConfiguration;
     locale: UnicodeLanguageIdentifier;
     /**
@@ -669,7 +710,7 @@ export type Document = {
     /**
      * Type of a document, affecting localized strings, layouts, and possible parameters of the document.
      */
-    type: 'invoice' | 'credit-note' | 'purchase-order' | 'sales-order' | 'quotation' | 'delivery-note';
+    type: 'invoice' | 'self-billing-invoice' | 'cancellation-invoice' | 'purchase-order' | 'sales-order' | 'quotation' | 'delivery-note';
     eInvoice?: EInvoiceConfiguration;
     locale: UnicodeLanguageIdentifier;
     /**
@@ -688,6 +729,7 @@ export type Document = {
     sender: SenderParty;
     recipient: RecipientParty;
     buyerReference?: BuyerReference;
+    precedingDocument?: PrecedingDocument;
     payment: PaymentInformation;
     /**
      * Information about the delivery destination of physical goods.
@@ -735,6 +777,7 @@ export type DocumentLine = {
      * Textual note that gives unstructured information that is relevant to the document line.
      */
     note?: string;
+    templateOptions?: TemplateLineOptions;
 };
 
 /**
@@ -1291,5 +1334,5 @@ export type ListLedgerBalancesResponses = {
 export type ListLedgerBalancesResponse = ListLedgerBalancesResponses[keyof ListLedgerBalancesResponses];
 
 export type ClientOptions = {
-    baseUrl: 'http://www.localhost' | (string & {});
+    baseUrl: 'http://www.rechnungs-api.de' | (string & {});
 };
