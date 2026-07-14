@@ -150,9 +150,10 @@ const documentRequest: DocumentCreateRequest = {
 		type: "zugferd",
 		profile: "xrechnung",
 		validation: {
-			// Perform additional validation checks using Mustang.
-			// This increases the response time significantly.
-			mustang: true,
+			// Validate against the official EN 16931 / XRechnung business
+			// rules before issuing (enabled by default). Invalid documents
+			// are rejected with a detailed list of rule violations.
+			enabled: true,
 		}
 	},
 	// Customize the look of your invoice
