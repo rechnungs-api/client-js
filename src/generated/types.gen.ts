@@ -78,7 +78,7 @@ export type ZugferdConfiguration = {
      */
     type: 'zugferd';
     profile: ZugferdProfile;
-    validation?: ZugferdValidation;
+    validation?: EInvoiceValidation;
 };
 
 /**
@@ -87,11 +87,16 @@ export type ZugferdConfiguration = {
 export type ZugferdProfile = 'minimum' | 'basic-wl' | 'basic' | 'en-16931' | 'extended' | 'xrechnung';
 
 /**
- * Validation options for ZUGFeRD e-invoices.
+ * Validation options for e-invoices.
  */
-export type ZugferdValidation = {
+export type EInvoiceValidation = {
     /**
-     * Whether to validate the ZUGFeRD PDF using the [Mustang Project](https://www.mustangproject.org/) validator. Recommended to keep enabled.
+     * Whether to validate the e-invoice against the official business rules (EN 16931, and the XRechnung CIUS rules where applicable) before it is issued. Invalid e-invoices are rejected with a detailed list of rule violations. Recommended to keep enabled.
+     */
+    enabled?: boolean;
+    /**
+     * **Deprecated.** Previously enabled validation with the Mustang Project validator. Validation is now always performed by our own validator when `enabled` is true (the default); this flag is accepted for backward compatibility and has no effect.
+     * @deprecated
      */
     mustang?: boolean;
 };
@@ -106,23 +111,13 @@ export type XRechnungConfiguration = {
      * Whether a PDF version of the document should be embedded inside the XRechnung XML.
      */
     embedPdf: boolean;
-    validation?: XRechnungValidation;
+    validation?: EInvoiceValidation;
 };
 
 /**
  * Syntax to use when generating the XRechnung XML. We recommend `ubl`.
  */
 export type XRechnungSyntax = 'ubl' | 'cii';
-
-/**
- * Validation options for XRechnung e-invoices.
- */
-export type XRechnungValidation = {
-    /**
-     * Whether to validate the XRechnung XML using the [Mustang Project](https://www.mustangproject.org/) validator. Recommended to keep enabled.
-     */
-    mustang?: boolean;
-};
 
 /**
  * [Unicode language identifier](https://www.unicode.org/reports/tr35/#Unicode_language_identifier) for localization. Currently, only `de-DE` for German and `en-US` for English are supported.
@@ -1334,5 +1329,5 @@ export type ListLedgerBalancesResponses = {
 export type ListLedgerBalancesResponse = ListLedgerBalancesResponses[keyof ListLedgerBalancesResponses];
 
 export type ClientOptions = {
-    baseUrl: 'http://www.rechnungs-api.de' | (string & {});
+    baseUrl: 'http://www.localhost' | (string & {});
 };
